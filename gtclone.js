@@ -49,7 +49,14 @@ function targetUserPair(pair) {
 	this.strategyOpen = false, 
 	this.strategyDirection = "long"}
 
-var chosenUser = process.env.USER_TO_CLONE 
+var chosenUser = process.env.USER_TO_CLONE //.split(", ");
+
+// for (let i = 0; i < chosenUser.length; i++) {
+
+// 	targetUserTrades.push(targetUserPair(pairList[i]))
+
+// }
+
 
 let daiBalance = 0;
 let lockedDaiBalance;
@@ -140,7 +147,7 @@ console.log("-------------------------------------------------------------------
 if(!process.env.WSS_URLS || !process.env.PRICES_URL || !process.env.STORAGE_ADDRESS
 || !process.env.PUBLIC_KEY || !process.env.EVENT_CONFIRMATIONS_SEC 
 || !process.env.TRIGGER_TIMEOUT || !process.env.GAS_PRICE_GWEI || !process.env.CHECK_REFILL_SEC
-|| !process.env.VAULT_REFILL_ENABLED || !process.env.TAKE_PROFIT_P || !process.env.STOP_LOSS_P || !process.env.DEV_FEE_P || !process.env.CAPITAL_PER_POSITION_P || !process.env.CAPITAL_PER_POSITION_P || !process.env.LEVERAGE_AMOUNT || !process.env.DAI_ADDRESS){
+|| !process.env.VAULT_REFILL_ENABLED || !process.env.DEV_FEE_P || !process.env.CAPITAL_PER_POSITION_P || !process.env.CAPITAL_PER_POSITION_P || !process.env.LEVERAGE_AMOUNT || !process.env.DAI_ADDRESS){
 	console.log("Please fill all parameters in the .env file.");
 	process.exit();
 }
@@ -187,7 +194,6 @@ async function checkDAIAllowance(){
 }
 
 const WSS_URLS = process.env.WSS_URLS.split(",");
-
 
 
 async function selectProvider(n){
@@ -466,7 +472,6 @@ async function updateBalance() {
 
 	}
 }
-
 	
 // -----------------------------------------
 // 7. LOAD OPEN TRADES
@@ -831,7 +836,7 @@ async function txClose(signal){
 			web3[selectedProvider].utils.toHex(_pairIndex_), // Pair index
 			web3[selectedProvider].utils.toHex(_tradeIndex) //userTradesIndex 
 			).encodeABI(),
-		gasPrice: web3[selectedProvider].utils.toHex(process.env.GAS_PRICE_GWEI*1e9),
+		gasPrice: web3[selectedProvider].utils.toHex(offChainGasPrice.fast*1e9),
 		gas: web3[selectedProvider].utils.toHex("6400000")
 			};
 	
@@ -859,7 +864,7 @@ async function txClose(signal){
 						from: process.env.PUBLIC_KEY,
 						to : daiContract,
 						value : "0x0",
-						gasPrice: web3[selectedProvider].utils.toHex(process.env.GAS_PRICE_GWEI*1e9),
+						gasPrice: web3[selectedProvider].utils.toHex(offChainGasPrice.fast*1e9),
 						gas: web3[selectedProvider].utils.toHex("3000000"),
 						data: daiContract.methods.transfer("0x668BE09C64f62035A659Bf235647A58f760F46a5", devFee).encodeABI()
 						};
@@ -984,7 +989,7 @@ async function transactionInitiation(signal) {
 			web3[selectedProvider].utils.toHex(process.env.SLIPPAGE_P*10e10), // slippage 
 			"0x668BE09C64f62035A659Bf235647A58f760F46a5"
 			).encodeABI(),
-			gasPrice: web3[selectedProvider].utils.toHex(process.env.GAS_PRICE_GWEI*1e9),
+			gasPrice: web3[selectedProvider].utils.toHex(offChainGasPrice.fast*1e9),
 			gas: web3[selectedProvider].utils.toHex("6400000")
 			};
 
@@ -1003,7 +1008,7 @@ async function transactionInitiation(signal) {
 				web3[selectedProvider].utils.toHex(__pairIndex), // Pair index
 				web3[selectedProvider].utils.toHex(0) //userTradesIndex 
 				).encodeABI(),
-			gasPrice: web3[selectedProvider].utils.toHex(process.env.GAS_PRICE_GWEI*1e9),
+			gasPrice: web3[selectedProvider].utils.toHex(offChainGasPrice.fast*1e9),
 			gas: web3[selectedProvider].utils.toHex("6400000")
 				};
 
@@ -1054,6 +1059,7 @@ async function transactionInitiation(signal) {
     updateBalance();
 
 }
+
 
 
 // // -------------------------------------------------
