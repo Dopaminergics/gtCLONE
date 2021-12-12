@@ -1,4 +1,6 @@
 **初心 gtCLONE 初心**                        
+
+Gains.trade position cloner.  
 Target another user and clone their trades           
 --------------------------------------------------------------------------------
 
